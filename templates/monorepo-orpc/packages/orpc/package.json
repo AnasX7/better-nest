@@ -24,6 +24,7 @@
   "dependencies": {
     "@orpc/contract": "catalog:",
     "@orpc/nest": "catalog:",
+    "@repo/types": "workspace:*",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "zod": "catalog:"

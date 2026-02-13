@@ -1,9 +1,6 @@
 import { oc } from '@orpc/contract';
-import * as z from 'zod';
 import { populateContractRouterPaths } from '@orpc/nest';
-
-export const MessageSchema = z.object({ message: z.string() });
-export type Message = z.infer<typeof MessageSchema>;
+import { MessageSchema } from '@repo/types/example';
 
 // Define routes:
 const getHello = oc
