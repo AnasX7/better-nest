@@ -1,6 +1,6 @@
 {
   "name": "create-better-nest",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "A CLI tool for creating better NestJS applications",
   "main": "./dist/index.js",
   "bin": {
@@ -11,7 +11,6 @@
     "dist",
     "README.md"
   ],
-  "type": "module",
   "scripts": {
     "build": "tsup",
     "prepublishOnly": "npm run build",
@@ -21,16 +20,14 @@
     "lint": "eslint .",
     "dev:build": "tsup --watch --onSuccess \"node dist/index.js\""
   },
-  "dependencies": {
-    "@clack/prompts": "^0.7.0",
-    "commander": "^11.1.0",
-    "fs-extra": "^11.2.0",
-    "picocolors": "^1.0.0",
-    "tiged": "^2.12.0"
-  },
   "devDependencies": {
+    "@clack/prompts": "^0.7.0",
     "@types/fs-extra": "^11.0.0",
     "@types/node": "^20.0.0",
+    "commander": "^11.1.0",
+    "fs-extra": "^11.2.0",
+    "giget": "^3.1.2",
+    "picocolors": "^1.0.0",
     "tsup": "^8.0.0",
     "tsx": "^4.19.3",
     "typescript": "^5.0.0"

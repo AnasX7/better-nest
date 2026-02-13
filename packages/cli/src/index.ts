@@ -10,7 +10,7 @@ import {
 } from '@clack/prompts'
 import { program } from 'commander'
 import pc from 'picocolors'
-import tiged from 'tiged'
+import { downloadTemplate } from 'giget'
 import fs from 'fs-extra'
 import path from 'path'
 import { execSync } from 'child_process'
@@ -82,14 +82,13 @@ async function main() {
   }
 
   try {
-    const emitter = tiged(templatePath, {
-      disableCache: true,
-      force: true,
-      verbose: false,
-    })
-
     const projectDir = path.resolve(process.cwd(), projectName as string)
-    await emitter.clone(projectDir)
+
+    await downloadTemplate(templatePath, {
+      dir: projectDir,
+      force: true,
+      offline: false,
+    })
 
     s.message('Configuring project...')
 
