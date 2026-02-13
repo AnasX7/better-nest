@@ -1,124 +1,73 @@
-# Turborepo starter
+# Better Nest Monorepo (oRPC Edition)
 
-This is a community-maintained example. If you experience a problem, please submit a pull request with a fix. GitHub Issues will be closed.
+Welcome to your new **Better Nest** monorepo powered by **oRPC**! This template takes type safety to the next level by ensuring your frontend client is perfectly synchronized with your backend contract.
 
-## Using this example
+## 🚀 Key Features
 
-Run the following command:
+- **End-to-End Type Safety:** Types flow automatically from your API contract to your frontend client. No manual type generation required.
+- **oRPC:** A modern RPC library for TypeScript that feels like magic.
+- **Turborepo & pnpm:** Blazing fast builds and package management.
+- **NestJS & Next.js:** The industry standard for full-stack TypeScript.
 
-```bash
-npx create-turbo@latest -e with-nestjs
-```
+## 📂 Project Structure
 
-## What's inside?
-
-This Turborepo includes the following packages & apps:
-
-### Apps and Packages
-
-```shell
+```text
 .
 ├── apps
-│   ├── api                       # NestJS app (https://nestjs.com).
-│   └── web                       # Next.js app (https://nextjs.org).
+│   ├── server          # NestJS API implementing the contract
+│   └── web             # Next.js frontend consuming the contract
 └── packages
-    ├── @repo/orpc                 # Shared `NestJS` resources.
-    ├── @repo/eslint-config       # `eslint` configurations (includes `prettier`)
-    ├── @repo/jest-config         # `jest` configurations
-    ├── @repo/typescript-config   # `tsconfig.json`s used throughout the monorepo
-    └── @repo/ui                  # Shareable stub React component library.
+    ├── orpc            # The API Contract (Source of Truth)
+    ├── auth            # Shared authentication
+    ├── db              # Prisma database setup
+    └── types           # Shared Zod schemas
 ```
 
-Each package and application are mostly written in [TypeScript](https://www.typescriptlang.org/).
+## 🪄 How oRPC Works Here
 
-### Utilities
+1.  **Define Contract (`packages/orpc`)**:
+    You define your API routes and input/output schemas using Zod in `packages/orpc/src/index.ts`.
+    ```typescript
+    export const contract = populateContractRouterPaths({
+      hello: { get: getHelloRoute }
+    });
+    ```
 
-This `Turborepo` has some additional tools already set for you:
+2.  **Implement Server (`apps/server`)**:
+    Your NestJS controllers implement the contract using the `@Implement` decorator.
+    ```typescript
+    @Implement(contract.hello.get)
+    getHello() { ... }
+    ```
 
-- [TypeScript](https://www.typescriptlang.org/) for static type-safety
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-- [Jest](https://prettier.io) & [Playwright](https://playwright.dev/) for testing
+3.  **Consume Client (`apps/web`)**:
+    Your frontend uses the type-safe client which knows exactly what your server expects and returns.
+    ```typescript
+    const data = await api.hello.get();
+    //    ^? typed as { message: string }
+    ```
 
-### Commands
+## 🛠️ Quick Start
 
-This `Turborepo` already configured useful commands for all your apps and packages.
+1.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
 
-#### Build
+2.  **Database Setup:**
+    ```bash
+    pnpm db:migrate
+    pnpm db:generate
+    ```
 
-```bash
-# Will build all the app & packages with the supported `build` script.
-pnpm run build
+3.  **Start Development:**
+    ```bash
+    pnpm dev
+    ```
 
-# ℹ️ If you plan to only build apps individually,
-# Please make sure you've built the packages first.
-```
+## 📦 Adding a New Endpoint
 
-#### Develop
-
-```bash
-# Will run the development server for all the app & packages with the supported `dev` script.
-pnpm run dev
-```
-
-#### test
-
-```bash
-# Will launch a test suites for all the app & packages with the supported `test` script.
-pnpm run test
-
-# You can launch e2e testes with `test:e2e`
-pnpm run test:e2e
-
-# See `@repo/jest-config` to customize the behavior.
-```
-
-#### Lint
-
-```bash
-# Will lint all the app & packages with the supported `lint` script.
-# See `@repo/eslint-config` to customize the behavior.
-pnpm run lint
-```
-
-#### Format
-
-```bash
-# Will format all the supported `.ts,.js,json,.tsx,.jsx` files.
-# See `@repo/eslint-config/prettier-base.js` to customize the behavior.
-pnpm format
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```bash
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```bash
-npx turbo link
-```
-
-## Useful Links
-
-This example take some inspiration the [with-nextjs](https://github.com/vercel/turborepo/tree/main/examples/with-nextjs) `Turbo` example and [01-cats-app](https://github.com/nestjs/nest/tree/master/sample/01-cats-app) `NestJs` sample.
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+1.  Go to `packages/orpc` and add a new route definition.
+2.  Go to `apps/server` and implement the logic for that route.
+3.  Go to `apps/web` and call `api.yourNewRoute()`.
+    *TypeScript will guide you through every step!*
