@@ -109,12 +109,11 @@ async function main() {
 
     s.stop('Scaffolding complete!')
 
-    outro(`Success! Created ${projectName} at ./${projectName}
+    outro(`You're all set! To get started, run:
 
-Next steps:
-  cd ${projectName}
-  pnpm install
-  pnpm dev
+  ${pc.green(`cd ${projectName}`)}
+  ${pc.green('pnpm install')}
+  ${pc.green('pnpm dev')}
 `)
   } catch (error) {
     s.stop('Scaffolding failed.')

@@ -18,7 +18,8 @@
     "db:watch": "turbo -F @repo/db db:watch",
     "db:stop": "turbo -F @repo/db db:stop",
     "db:down": "turbo -F @repo/db db:down",
-    "prepare": "husky"
+    "prepare": "husky",
+    "preinstall": "npx only-allow pnpm"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
