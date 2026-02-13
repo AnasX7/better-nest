@@ -14,9 +14,9 @@
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-slot": "^1.2.3",
-    "@marifa/auth": "workspace:^",
-    "@marifa/types": "workspace:*",
-    "@marifa/ui": "workspace:*",
+    "@repo/auth": "workspace:^",
+    "@repo/types": "workspace:*",
+    "@repo/ui": "workspace:*",
     "@tanstack/react-form": "^1.27.0",
     "axios": "^1.7.9",
     "babel-plugin-react-compiler": "^1.0.0",
@@ -32,7 +32,7 @@
     "pg": "catalog:"
   },
   "devDependencies": {
-    "@marifa/eslint-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "19.2.3",

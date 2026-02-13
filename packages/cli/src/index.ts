@@ -11,6 +11,9 @@ import {
 import { program } from 'commander'
 import pc from 'picocolors'
 import tiged from 'tiged'
+import fs from 'fs-extra'
+import path from 'path'
+import { execSync } from 'child_process'
 
 async function main() {
   program
@@ -85,7 +88,24 @@ async function main() {
       verbose: false,
     })
 
-    await emitter.clone(projectName as string)
+    const projectDir = path.resolve(process.cwd(), projectName as string)
+    await emitter.clone(projectDir)
+
+    s.message('Configuring project...')
+
+    const packageJsonPath = path.join(projectDir, 'package.json')
+    if (await fs.pathExists(packageJsonPath)) {
+      const pkg = await fs.readJson(packageJsonPath)
+      pkg.name = projectName
+      await fs.writeJson(packageJsonPath, pkg, { spaces: 2 })
+    }
+
+    s.message('Initializing git repository...')
+    try {
+      execSync('git init', { cwd: projectDir, stdio: 'ignore' })
+    } catch (e) {
+      // Ignore git init errors if git is not installed or configured
+    }
 
     s.stop('Scaffolding complete!')
 

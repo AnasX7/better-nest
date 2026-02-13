@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { UserRepository } from './repositories/user.repository'
-import type { CreateUser, UpdateUser } from '@marifa/types/user'
+import type { CreateUser, UpdateUser } from '@repo/types/user'
 
 @Injectable()
 export class ExampleService {

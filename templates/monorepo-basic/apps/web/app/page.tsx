@@ -1,4 +1,4 @@
-import { Button } from '@marifa/ui/components/button'
+import { Button } from '@repo/ui/components/button'
 import { helloService } from '@/services/hello'
 import { TechStackVisual } from '@/components/tech-stack-visual'
 import { GalleryVerticalEnd } from 'lucide-react'

@@ -1,10 +1,10 @@
 {
-  "extends": "@marifa/typescript-config/react-library.json",
+  "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": ".",
     "paths": {
-      "@marifa/ui/*": ["./src/*"]
+      "@repo/ui/*": ["./src/*"]
     },
     "outDir": "dist"
   },

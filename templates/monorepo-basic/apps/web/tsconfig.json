@@ -27,7 +27,7 @@
       "@/*": [
         "./*"
       ],
-      "@marifa/ui/*": [
+      "@repo/ui/*": [
         "../../packages/ui/src/*"
       ]
     }

@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common'
 import { AppService } from './app.service'
 import { AllowAnonymous } from '@thallesp/nestjs-better-auth'
-import type { Message } from '@marifa/types/example'
+import type { Message } from '@repo/types/example'
 
 @AllowAnonymous()
 @Controller()

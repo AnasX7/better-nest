@@ -1,5 +1,5 @@
 import { api } from '@/lib/axios'
-import type { Message } from '@marifa/types/example'
+import type { Message } from '@repo/types/example'
 
 export const helloService = {
   getHello: async (): Promise<Message> => {

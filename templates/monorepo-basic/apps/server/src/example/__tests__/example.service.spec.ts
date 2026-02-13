@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { NotFoundException } from '@nestjs/common'
 import { ExampleService } from '#/example/example.service'
 import { UserRepository } from '#/example/repositories/user.repository'
-import type { User } from '@marifa/types/user'
+import type { User } from '@repo/types/user'
 
 // Mock user data
 const mockUser: User = {

@@ -1,5 +1,5 @@
 {
-  "name": "@marifa/types",
+  "name": "@repo/types",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -24,8 +24,8 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@marifa/eslint-config": "workspace:*",
-    "@marifa/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "eslint": "^9.39.1",
     "typescript": "catalog:"
   },

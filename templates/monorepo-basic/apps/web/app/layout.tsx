@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 
-import '@marifa/ui/globals.css'
+import '@repo/ui/globals.css'
 import { Providers } from '@/components/providers'
-import { Toaster } from '@marifa/ui/components/sonner'
-import { AnimatedThemeToggler } from '@marifa/ui/components/animated-theme-toggler'
+import { Toaster } from '@repo/ui/components/sonner'
+import { AnimatedThemeToggler } from '@repo/ui/components/animated-theme-toggler'
 
 const fontSans = Geist({
   subsets: ['latin'],

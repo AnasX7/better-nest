@@ -1,5 +1,5 @@
 {
-  "name": "@marifa/auth",
+  "name": "@repo/auth",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "private": true,
@@ -22,7 +22,7 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@marifa/db": "workspace:*",
+    "@repo/db": "workspace:*",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "react-is": "^19.2.0",

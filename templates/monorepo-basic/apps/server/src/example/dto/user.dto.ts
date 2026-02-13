@@ -4,7 +4,7 @@ import {
   createUserSchema,
   updateUserSchema,
   userParamsSchema
-} from '@marifa/types/user'
+} from '@repo/types/user'
 
 // DTOs created from shared schemas using nestjs-zod
 // This enables automatic validation and Swagger documentation

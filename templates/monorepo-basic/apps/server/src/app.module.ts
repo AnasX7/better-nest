@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config'
 
 import { AuthModule } from '@thallesp/nestjs-better-auth'
 import { ZodValidationPipe, ZodSerializerInterceptor } from 'nestjs-zod'
-import { auth } from '@marifa/auth'
+import { auth } from '@repo/auth'
 
 import { HttpExceptionFilter } from '#/common/filters/http-exception.filter'
 import { AppService } from '#/app.service'

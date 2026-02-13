@@ -11,10 +11,10 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@marifa/ui/components",
-    "utils": "@marifa/ui/lib/utils",
-    "hooks": "@marifa/ui/hooks",
-    "lib": "@marifa/ui/lib",
-    "ui": "@marifa/ui/components"
+    "components": "@repo/ui/components",
+    "utils": "@repo/ui/lib/utils",
+    "hooks": "@repo/ui/hooks",
+    "lib": "@repo/ui/lib",
+    "ui": "@repo/ui/components"
   }
 }

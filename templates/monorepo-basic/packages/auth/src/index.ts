@@ -2,7 +2,7 @@ import * as dotenv from 'dotenv'
 import { betterAuth } from 'better-auth'
 import { admin, openAPI } from 'better-auth/plugins'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
-import { prisma } from '@marifa/db'
+import { prisma } from '@repo/db'
 
 dotenv.config({
   path: '../../../apps/server/.env'

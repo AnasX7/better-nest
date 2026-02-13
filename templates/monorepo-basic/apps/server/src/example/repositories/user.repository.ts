@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '#/database/prisma.service'
-import type { User, CreateUser, UpdateUser } from '@marifa/types/user'
+import type { User, CreateUser, UpdateUser } from '@repo/types/user'
 
 // Helper to transform Prisma User (with Date) to API User (with ISO string)
 type PrismaUser = {

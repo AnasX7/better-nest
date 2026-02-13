@@ -6,16 +6,16 @@ import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { cn } from '@marifa/ui/lib/utils'
-import { Button } from '@marifa/ui/components/button'
+import { cn } from '@repo/ui/lib/utils'
+import { Button } from '@repo/ui/components/button'
 import {
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
   FieldSeparator
-} from '@marifa/ui/components/field'
-import { Input } from '@marifa/ui/components/input'
+} from '@repo/ui/components/field'
+import { Input } from '@repo/ui/components/input'
 
 const signupSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),

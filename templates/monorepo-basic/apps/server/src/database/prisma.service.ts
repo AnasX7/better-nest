@@ -5,7 +5,7 @@ import {
   Logger,
   Inject
 } from '@nestjs/common'
-import { PrismaClient, adapter } from '@marifa/db'
+import { PrismaClient, adapter } from '@repo/db'
 import { EnvService } from '#/config/env.service'
 
 @Injectable()
