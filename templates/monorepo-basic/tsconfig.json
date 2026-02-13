@@ -1,0 +1,3 @@
+{
+  "extends": "@marifa/typescript-config/base.json"
+}

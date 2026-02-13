@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@marifa/ui/components",
+    "utils": "@marifa/ui/lib/utils",
+    "hooks": "@marifa/ui/hooks",
+    "lib": "@marifa/ui/lib",
+    "ui": "@marifa/ui/components"
+  }
+}

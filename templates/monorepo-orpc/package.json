@@ -1,0 +1,43 @@
+{
+  "name": "marifa",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:server": "turbo watch dev --filter=server --filter=@repo/types --filter=@repo/auth --filter=@repo/db",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "check-format": "prettier --check \"**/*.{ts,tsx,md}\"",
+    "db:studio": "turbo -F @repo/db db:studio",
+    "db:generate": "turbo -F @repo/db db:generate",
+    "db:migrate": "turbo -F @repo/db db:migrate",
+    "db:start": "turbo -F @repo/db db:start",
+    "db:watch": "turbo -F @repo/db db:watch",
+    "db:stop": "turbo -F @repo/db db:stop",
+    "db:down": "turbo -F @repo/db db:down",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "husky": "^9.1.7",
+    "prettier": "^3.7.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "turbo": "^2.6.1",
+    "typescript": "catalog:"
+  },
+  "packageManager": "pnpm@10.24.0",
+  "engines": {
+    "node": ">=18"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowedVersions": {
+        "better-auth>next": "16"
+      }
+    }
+  }
+}

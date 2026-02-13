@@ -1,0 +1,102 @@
+// Organization Registration Request - separate from Better Auth Organization
+// Used for multi-step form draft persistence and submission workflow
+model OrgRequest {
+  id          String @id @default(cuid())
+  userId      String
+  status      String @default("draft") // draft, pending, has-notes, re-submitted, approved
+  currentStep Int    @default(1)
+
+  // Admin review fields
+  notes      String[]
+  reviewedBy String?
+  reviewedAt DateTime?
+
+  // Step 1: Basic Data
+  name                 String?
+  registrationNumber   String?
+  licenseType          String?
+  licenseExpiryDate    DateTime?
+  foundingYear         Int?
+  governancePercentage Float?
+  entityType           String? // 'association' | 'organization'
+  specialization       String?
+  targetAudience       String? // 'male' | 'female' | 'all'
+  annualBeneficiaries  Int?
+  description          String?
+  hasHeadquarters      Boolean   @default(true)
+  region               String?
+  city                 String?
+  detailedAddress      String?
+  latitude             Float?
+  longitude            Float?
+  activityRegions      String[]
+
+  // Step 2: Contact
+  phone       String?
+  email       String?
+  website     String?
+  socialMedia Json? // {snapchat, twitter, instagram, linkedin}
+
+  // Step 3: About
+  about   String?
+  vision  String?
+  mission String?
+  goals   String?
+
+  // Step 4: Documents
+  logoPath            String?
+  certificatePath     String?
+  profileDocumentPath String?
+  termsAccepted       Boolean @default(false)
+
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  submittedAt DateTime?
+
+  // Relations
+  achievements RequestAchievement[]
+  programs     RequestProgram[]
+  partnerLogos RequestPartnerLogo[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("organization_request")
+}
+
+model RequestAchievement {
+  id        String     @id @default(cuid())
+  requestId String
+  request   OrgRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  icon      String
+  title     String
+  size      String?
+
+  @@index([requestId])
+  @@map("request_achievement")
+}
+
+model RequestProgram {
+  id                 String     @id @default(cuid())
+  requestId          String
+  request            OrgRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  name               String
+  description        String?
+  beneficiariesCount Int?
+  type               String?
+  categories         String[]
+
+  @@index([requestId])
+  @@map("request_program")
+}
+
+model RequestPartnerLogo {
+  id        String     @id @default(cuid())
+  requestId String
+  request   OrgRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  path      String
+  name      String?
+
+  @@index([requestId])
+  @@map("request_partner_logo")
+}

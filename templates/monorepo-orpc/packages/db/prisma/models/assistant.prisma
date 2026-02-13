@@ -1,0 +1,38 @@
+// Assistant Models - LectureAssistant, ChatMessage
+
+model LectureAssistant {
+  id String @id @map("_id")
+
+  lectureId String  @unique
+  lecture   Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  displayName  String?
+  systemPrompt String?
+  model        String?
+  metadata     Json?
+
+  messages ChatMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("lecture_assistant")
+}
+
+model ChatMessage {
+  id          String           @id @map("_id")
+  assistantId String
+  assistant   LectureAssistant @relation(fields: [assistantId], references: [id], onDelete: Cascade)
+
+  role     ChatRole
+  content  String   @db.Text
+  toolName String?
+  model    String?
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([assistantId, createdAt])
+  @@map("chat_message")
+}

@@ -1,0 +1,13 @@
+{
+  "extends": "@marifa/typescript-config/react-library.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": ".",
+    "paths": {
+      "@marifa/ui/*": ["./src/*"]
+    },
+    "outDir": "dist"
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
+}

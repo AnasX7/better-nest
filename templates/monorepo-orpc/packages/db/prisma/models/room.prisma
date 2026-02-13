@@ -1,0 +1,83 @@
+// Room Models - Room, Membership, Sharing, Notes
+
+model Room {
+  id          String  @id @map("_id")
+  name        String
+  description String?
+
+  ownerId String
+  owner   User   @relation("RoomOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  isPrivate Boolean?
+
+  memberships RoomMembership[]
+  shares      RoomShare[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("room")
+}
+
+model RoomMembership {
+  id     String @id @map("_id")
+  roomId String
+  userId String
+
+  invitedById String?
+  invitedBy   User?   @relation("MembershipInvitedBy", fields: [invitedById], references: [id], onDelete: SetNull)
+
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user User @relation("RoomMember", fields: [userId], references: [id], onDelete: Cascade)
+
+  role   MemberRole
+  status MemberStatus
+
+  joinedAt  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([roomId, userId])
+  @@map("room_membership")
+}
+
+model RoomShare {
+  id         String @id @map("_id")
+  roomId     String
+  artifactId String
+  sharedById String
+
+  room     Room            @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  artifact ContentArtifact @relation(fields: [artifactId], references: [id], onDelete: Cascade)
+  sharedBy User            @relation("RoomShareSharedBy", fields: [sharedById], references: [id], onDelete: Cascade)
+
+  caption  String?
+  metadata Json?
+
+  notes RoomNote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([roomId, artifactId, sharedById])
+  @@index([roomId])
+  @@map("room_share")
+}
+
+model RoomNote {
+  id       String @id @map("_id")
+  shareId  String
+  authorId String
+
+  share  RoomShare @relation(fields: [shareId], references: [id], onDelete: Cascade)
+  author User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  content  String @db.Text
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([shareId, createdAt])
+  @@map("room_note")
+}

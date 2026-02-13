@@ -1,0 +1,42 @@
+// Enums used across the schema
+
+enum SourceType {
+  PDF
+  MARKDOWN
+  TEXT
+  AUDIO
+  YOUTUBE
+}
+
+enum ArtifactType {
+  PODCAST
+  VIDEO
+  QA_SET
+  FLASHCARD_SET
+}
+
+enum ProcessingStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
+enum ChatRole {
+  USER
+  ASSISTANT
+  SYSTEM
+  TOOL
+}
+
+enum MemberRole {
+  OWNER
+  MEMBER
+}
+
+enum MemberStatus {
+  INVITED
+  ACCEPTED
+  DECLINED
+  REMOVED
+}

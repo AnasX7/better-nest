@@ -1,0 +1,163 @@
+// Core Content Models - Folder, Lecture, Sources, Artifacts
+
+model Folder {
+  id      String @id @map("_id")
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  name  String
+  color String?
+  emoji String?
+
+  lectures Lecture[]
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  @@unique([ownerId, name])
+  @@map("folder")
+}
+
+model Lecture {
+  id String @id @map("_id")
+
+  ownerId String
+  owner   User   @relation("LectureOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  folderId String
+  folder   Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  title       String
+  description String?
+  language    String?
+
+  sources   LectureSource[]
+  artifacts ContentArtifact[]
+  assistant LectureAssistant?
+  bookmarks Bookmark[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("lecture")
+}
+
+model LectureSource {
+  id        String  @id @map("_id")
+  lectureId String
+  lecture   Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  kind            SourceType
+  title           String?
+  url             String?
+  fileKey         String?
+  textContent     String?          @db.Text
+  transcript      String?          @db.Text
+  language        String?
+  durationSeconds Int?
+  pageCount       Int?
+  checksum        String?
+  status          ProcessingStatus
+  metadata        Json?
+
+  artifacts ArtifactSource[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lectureId])
+  @@map("lecture_source")
+}
+
+model ContentArtifact {
+  id        String  @id @map("_id")
+  lectureId String
+  lecture   Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  ownerId String
+  owner   User   @relation("ArtifactOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+
+  type            ArtifactType
+  title           String
+  description     String?
+  language        String?
+  status          ProcessingStatus
+  coverImageUrl   String?
+  fileUrl         String?
+  transcript      String?          @db.Text
+  durationSeconds Int?
+  metadata        Json?
+
+  qaPairs    QAPair[]
+  flashcards Flashcard[]
+  shares     RoomShare[]
+  sources    ArtifactSource[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lectureId, type])
+  @@map("artifact")
+}
+
+model ArtifactSource {
+  artifactId String
+  sourceId   String
+
+  artifact ContentArtifact @relation(fields: [artifactId], references: [id], onDelete: Cascade)
+  source   LectureSource   @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@id([artifactId, sourceId])
+  @@map("artifact_source")
+}
+
+model QAPair {
+  id         String          @id @map("_id")
+  artifactId String
+  artifact   ContentArtifact @relation(fields: [artifactId], references: [id], onDelete: Cascade)
+
+  question   String   @db.Text
+  answer     String   @db.Text
+  choices    Json?
+  correctKey String?
+  difficulty Int?
+  tags       String[] @default([])
+  metadata   Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([artifactId])
+  @@map("qa_pair")
+}
+
+model Flashcard {
+  id         String          @id @map("_id")
+  artifactId String
+  artifact   ContentArtifact @relation(fields: [artifactId], references: [id], onDelete: Cascade)
+
+  front    String   @db.Text
+  back     String   @db.Text
+  hint     String?
+  tags     String[] @default([])
+  metadata Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([artifactId])
+  @@map("flashcard")
+}
+
+model Bookmark {
+  userId    String
+  lectureId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lecture Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@id([userId, lectureId])
+  @@map("bookmark")
+}

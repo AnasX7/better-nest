@@ -1,0 +1,31 @@
+{
+  "name": "@repo/auth",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch --preserveWatchOutput"
+  },
+  "peerDependencies": {
+    "typescript": "catalog:"
+  },
+  "dependencies": {
+    "@repo/db": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "react-is": "^19.2.0",
+    "zod": "catalog:"
+  }
+}
