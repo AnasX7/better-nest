@@ -1,58 +1,67 @@
 # create-better-nest
 
-The ultimate CLI tool for scaffolding modern, production-ready NestJS applications. Whether you need a simple backend or a full-stack monorepo with end-to-end type safety, `create-better-nest` has you covered.
+The ultimate CLI tool for scaffolding modern, production-ready NestJS applications. Whether you need a standalone backend or a fullstack monorepo with end-to-end type safety, `create-better-nest` has you covered.
 
 ## ✨ Features
 
-- 🏗️ **Three Powerful Templates:**
-    - **Monorepo (oRPC):** The cutting edge. NestJS + Next.js with complete type safety from backend to frontend using oRPC.
-    - **Monorepo (Basic):** A solid foundation using Turbo, NestJS, and Next.js.
-    - **Standalone Backend:** A clean, pre-configured NestJS setup with Prisma, Swagger, and Docker.
-- 🚀 **Modern Tooling:** Pre-configured with `pnpm`, `Turborepo`, `Prisma`, `Zod`, and `Better Auth`.
-- 🛡️ **Best Practices:** Strict TypeScript configs, ESLint, and organized project structures out of the box.
+- 🏗️ **Production-Ready Templates:**
+  - **API Backend:** High-performance NestJS v12 + Fastify + Drizzle ORM (PostgreSQL) + Better Auth + Scalar OpenAPI docs + Pino logging.
+  - **Fullstack Monorepo:** Turborepo monorepo with NestJS server + Next.js App Router + shadcn/ui + Tailwind CSS v4 + Better Auth.
+- ⚡ **Lightning Fast Tooling:** Built with **Oxlint** & **Oxfmt** (Rust-based linter and formatter) and **Vitest**.
+- 🧰 **Multi-Package Manager Support:** Native support for **Bun**, **pnpm**, and **npm**.
+- 🧩 **Modular Addons Engine:**
+  - **Husky & lint-staged:** Pre-commit Git hooks for automated linting & formatting.
+  - **Docker:** Multi-stage production Dockerfiles & Docker Compose (Postgres).
+  - **AI Agent / MCP:** Model Context Protocol configuration for Claude Code, Antigravity, and Cursor.
+- 🚀 **Bundled with tsdown:** Built on Rolldown & Oxc for ultra-fast startup and execution.
 
 ## 🚀 Quick Start
 
-Run the magic command:
-
 ```bash
-npm create better-nest@latest
+# Using Bun (recommended)
+bun create better-nest@latest
+
+# Using pnpm
+pnpm create better-nest@latest
+
+# Using npm
+npx create-better-nest@latest
 ```
 
-Follow the interactive prompts to choose your preferred architecture and project name.
+You can also pass flags directly for headless / CI scaffolding:
 
-## 📦 What you get
-
-### 1. Monorepo (oRPC)
-Perfect for teams wanting tight integration between backend and frontend.
-- **Stack:** NestJS, Next.js, Turborepo, oRPC.
-- **Highlights:** Define your API contract once, and get fully typed clients on the frontend automatically.
-
-### 2. Monorepo (Basic)
-The industry standard for full-stack TypeScript.
-- **Stack:** NestJS, Next.js, Turborepo.
-- **Highlights:** Shared UI libraries, shared types, and shared ESLint configs.
-
-### 3. Standalone Backend
-For when you just need a powerful API.
-- **Stack:** NestJS, Prisma, Swagger.
-- **Highlights:** Clean architecture, Docker-ready, and set up for scale.
-
-## 🔧 Requirements
-
-- Node.js >= 18
-- pnpm (The generated projects rely on pnpm workspaces)
+```bash
+bun create better-nest@latest my-app \
+  --template api \
+  --pm bun \
+  --git \
+  --docker \
+  --husky \
+  --mcp \
+  --install
+```
 
 ## 🤝 Contributing
 
 We welcome contributions! This repository is a monorepo containing the CLI tool and the templates.
 
-1.  Clone the repo
-2.  Run `pnpm install`
-3.  Test the CLI locally:
-    ```bash
-    pnpm --filter create-better-nest cli
-    ```
+1. Clone the repo
+2. Run `bun install`
+3. Build the CLI:
+   ```bash
+   bun run build
+   ```
+4. Test the CLI locally:
+   ```bash
+   bun run cli
+   ```
+
+## ❤️ Acknowledgements & Inspiration
+
+`create-better-nest` is inspired by the developer experience of modern fullstack scaffolding tools:
+
+- [**create-better-t-stack**](https://github.com/AmanVarshney01/create-better-t-stack) by [Aman Varshney](https://github.com/AmanVarshney01): For pioneering the modern modular stack builder pattern and addons architecture.
+- [**create-t3-app**](https://create.t3.gg/): For popularizing end-to-end type safety and minimalist stack composition.
 
 ## 📄 License
 

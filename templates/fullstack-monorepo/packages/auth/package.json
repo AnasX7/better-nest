@@ -1,0 +1,23 @@
+{
+  "name": "@repo/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@repo/db": "workspace:*",
+    "@repo/env": "workspace:*",
+    "better-auth": "^1.7.2",
+    "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "@repo/tsconfig": "workspace:*",
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.3"
+  }
+}

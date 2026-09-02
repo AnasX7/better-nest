@@ -1,0 +1,36 @@
+{
+  "name": "better-nest-fullstack-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "oxlint",
+    "check-types": "turbo run check-types",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "check": "oxlint && oxfmt --check",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@repo/tsconfig": "workspace:*",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.4.1",
+    "oxfmt": "^0.65.0",
+    "oxlint": "^1.80.0",
+    "turbo": "^2.10.12",
+    "typescript": "^6.0.3"
+  },
+  "lint-staged": {
+    "*": [
+      "oxlint --no-error-on-unmatched-pattern",
+      "oxfmt --write --no-error-on-unmatched-pattern"
+    ]
+  },
+  "packageManager": "bun@1.4.0"
+}

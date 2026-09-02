@@ -1,1 +1,1 @@
-declare module 'tiged';
+declare module 'tiged'
