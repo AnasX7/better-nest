@@ -6,7 +6,7 @@ The ultimate CLI tool for scaffolding modern, production-ready NestJS applicatio
 
 - 🏗️ **Production-Ready Templates:**
   - **API Backend:** High-performance NestJS v12 + Fastify + Drizzle ORM (PostgreSQL) + Better Auth + Scalar OpenAPI docs + Pino logging.
-  - **Fullstack Monorepo:** Turborepo monorepo with NestJS server + Next.js App Router + shadcn/ui + Tailwind CSS v4 + Better Auth.
+  - **Fullstack Monorepo:** Turborepo monorepo with NestJS server + Next.js 16 App Router + shadcn/ui + Tailwind CSS v4 + Better Auth.
 - ⚡ **Lightning Fast Tooling:** Built with **Oxlint** & **Oxfmt** (Rust-based linter and formatter) and **Vitest**.
 - 🧰 **Multi-Package Manager Support:** Native support for **Bun**, **pnpm**, and **npm**.
 - 🧩 **Modular Addons Engine:**

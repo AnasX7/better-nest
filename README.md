@@ -23,7 +23,7 @@ npx create-better-nest@latest
 - **`packages/cli`**: The source code for the `create-better-nest` CLI tool (built with `tsdown` powered by Rolldown).
 - **`templates/`**: The production templates that users scaffold:
   - `api`: Standalone NestJS v12 + Fastify + Drizzle ORM + Better Auth + Scalar + Pino + Oxlint/Oxfmt.
-  - `fullstack-monorepo`: Turborepo with NestJS API + Next.js App Router + shadcn/ui + Better Auth.
+  - `fullstack-monorepo`: Turborepo with NestJS API + Next.js 16 App Router + shadcn/ui + Better Auth.
 
 ## 👩‍💻 Development
 

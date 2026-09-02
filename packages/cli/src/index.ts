@@ -163,7 +163,7 @@ async function main() {
           ? [
               {
                 value: 'next',
-                label: 'Next.js 15',
+                label: 'Next.js 16',
                 hint: 'App Router + shadcn/ui + Tailwind v4',
               },
               {
