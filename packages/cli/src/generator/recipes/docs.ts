@@ -31,17 +31,21 @@ export const docsRecipe: Recipe = {
         if (await fs.pathExists(mainPath)) {
           let content = await fs.readFile(mainPath, 'utf8')
           content = content.replace(
-            /import \{ apiReference \} from '@scalar\/nestjs-api-reference'\n?/,
+            /import\s*\{\s*apiReference\s*\}\s*from\s*'@scalar\/nestjs-api-reference'\n?/,
             '',
           )
           content = content.replace(
-            /import \{ DocumentBuilder, SwaggerModule \} from '@nestjs\/swagger'\n?/,
+            /import\s*\{\s*DocumentBuilder,\s*SwaggerModule\s*\}\s*from\s*'@nestjs\/swagger'\n?/,
             '',
           )
-          // Remove Swagger setup block
+          // Remove documentation setup block in main.ts
           content = content.replace(
-            /\/\/ Swagger \/ OpenAPI Specification[\s\S]*?app\.use\('\/docs', apiReference\([^)]*\)\)/,
+            /if\s*\(!config\.isProduction\s*\|\|\s*config\.get\('ENABLE_DOCS'\)\)\s*\{[\s\S]*?app\.use\(\s*'\/docs'[\s\S]*?\)\s*\}\n?/,
             '',
+          )
+          content = content.replace(
+            /exclude:\s*\[\s*'health',\s*'docs'\s*\]/,
+            "exclude: ['health']",
           )
           await fs.writeFile(mainPath, content, 'utf8')
         }
@@ -49,17 +53,23 @@ export const docsRecipe: Recipe = {
         if (await fs.pathExists(pkgPath)) {
           const pkg = await fs.readJson(pkgPath)
           delete pkg.dependencies['@scalar/nestjs-api-reference']
+          if (config.http === 'express') {
+            pkg.dependencies['swagger-ui-express'] = '^5.0.1'
+            pkg.devDependencies['@types/swagger-ui-express'] = '^4.1.8'
+          } else {
+            pkg.dependencies['@fastify/swagger-ui'] = '^5.2.2'
+          }
           await fs.writeJson(pkgPath, pkg, { spaces: 2 })
         }
 
         if (await fs.pathExists(mainPath)) {
           let content = await fs.readFile(mainPath, 'utf8')
           content = content.replace(
-            /import \{ apiReference \} from '@scalar\/nestjs-api-reference'\n?/,
+            /import\s*\{\s*apiReference\s*\}\s*from\s*'@scalar\/nestjs-api-reference'\n?/,
             '',
           )
           content = content.replace(
-            /app\.use\('\/docs', apiReference\([^)]*\)\)/,
+            /app\.use\(\s*'\/docs',\s*apiReference\([\s\S]*?\),\s*\)/,
             "SwaggerModule.setup('docs', app, document)",
           )
           await fs.writeFile(mainPath, content, 'utf8')
