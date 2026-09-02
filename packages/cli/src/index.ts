@@ -49,7 +49,7 @@ async function main() {
     .option('--arch <architecture>', 'Architecture (standalone, monorepo)')
     .option(
       '--frontend <frontend>',
-      'Frontend framework (next, tanstack-router, none)',
+      'Frontend framework (next, tanstack-start, tanstack-router, none)',
     )
     .option('--http <httpAdapter>', 'HTTP platform adapter (fastify, express)')
     .option('--db <database>', 'Database (postgres, sqlite, none)')
@@ -129,7 +129,7 @@ async function main() {
         options: [
           {
             value: 'standalone',
-            label: 'Standalone Backend API',
+            label: 'Standalone Backend API / Fullstack',
             hint: 'Single package NestJS application',
           },
           {
@@ -149,7 +149,12 @@ async function main() {
 
   // 3. Resolve Frontend
   let frontend: Frontend = cliOpts.frontend as Frontend
-  if (!frontend || !['next', 'tanstack-router', 'none'].includes(frontend)) {
+  const validFrontends =
+    arch === 'monorepo'
+      ? ['next', 'tanstack-start', 'none']
+      : ['none', 'tanstack-router']
+
+  if (!frontend || !validFrontends.includes(frontend)) {
     if (cliOpts.yes) {
       frontend = arch === 'monorepo' ? 'next' : 'none'
     } else {
@@ -162,9 +167,9 @@ async function main() {
                 hint: 'App Router + shadcn/ui + Tailwind v4',
               },
               {
-                value: 'tanstack-router',
-                label: 'TanStack Router',
-                hint: 'Vite + React SPA + shadcn/ui',
+                value: 'tanstack-start',
+                label: 'TanStack Start',
+                hint: 'Fullstack SSR React framework + TanStack Router',
               },
               { value: 'none', label: 'None', hint: 'Pure backend monorepo' },
             ]
@@ -173,7 +178,7 @@ async function main() {
               {
                 value: 'tanstack-router',
                 label: 'TanStack Router',
-                hint: 'Client SPA with Vite + React',
+                hint: 'Client SPA with Vite + React + shadcn/ui',
               },
             ]
 

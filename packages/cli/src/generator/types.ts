@@ -1,7 +1,7 @@
 import type { PackageManager } from '../utils/pm'
 
 export type Architecture = 'monorepo' | 'standalone'
-export type Frontend = 'next' | 'tanstack-router' | 'none'
+export type Frontend = 'next' | 'tanstack-start' | 'tanstack-router' | 'none'
 export type HttpAdapter = 'fastify' | 'express'
 export type Database = 'postgres' | 'sqlite' | 'none'
 export type Orm = 'drizzle' | 'none'
