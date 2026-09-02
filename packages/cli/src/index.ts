@@ -23,22 +23,40 @@ import {
   getRunCommand,
   type PackageManager,
 } from './utils/pm'
-import { copyTemplate, type TemplateType } from './utils/template'
 import { initGit, setupHusky } from './utils/git'
-import { getAddonOptions, getDefaultAddonIds, runAddonEngine } from './addons'
+import { getAddonOptions, getDefaultAddonIds } from './addons'
+import {
+  executeGenerator,
+  type Architecture,
+  type Frontend,
+  type HttpAdapter,
+  type Database,
+  type Orm,
+  type AuthProvider,
+  type ApiDocs,
+  type ProjectConfig,
+} from './generator'
 
 async function main() {
   printBanner()
 
   program
     .name('better-nest')
-    .description('CLI to scaffold production-grade NestJS applications')
-    .argument('[dir]', 'Directory name to create project in')
-    .option(
-      '-t, --template <template>',
-      'Template to use (api, fullstack-monorepo)',
+    .description(
+      'CLI to scaffold production-grade NestJS applications with modern TypeScript',
     )
-    .option('--pm <packageManager>', 'Package manager to use (bun, pnpm, npm)')
+    .argument('[dir]', 'Directory name to create project in')
+    .option('--arch <architecture>', 'Architecture (standalone, monorepo)')
+    .option(
+      '--frontend <frontend>',
+      'Frontend framework (next, tanstack-router, none)',
+    )
+    .option('--http <httpAdapter>', 'HTTP platform adapter (fastify, express)')
+    .option('--db <database>', 'Database (postgres, sqlite, none)')
+    .option('--orm <orm>', 'ORM (drizzle, none)')
+    .option('--auth <authProvider>', 'Authentication (better-auth, none)')
+    .option('--docs <apiDocs>', 'API documentation (scalar, swagger, none)')
+    .option('--pm <packageManager>', 'Package manager (bun, pnpm, npm)')
     .option(
       '-a, --addons <addons...>',
       'Addons to include (husky, docker, mcp)',
@@ -65,7 +83,7 @@ async function main() {
 
   intro(pc.bgCyan(pc.black(' create-better-nest ')))
 
-  // 1. Resolve Project Directory
+  // 1. Resolve Project Name / Directory
   let projectName = cliArgs[0]
   if (!projectName) {
     if (cliOpts.yes) {
@@ -100,24 +118,24 @@ async function main() {
     }
   }
 
-  // 2. Resolve Template
-  let template: TemplateType = cliOpts.template as TemplateType
-  if (!template || !['api', 'fullstack-monorepo'].includes(template)) {
+  // 2. Resolve Architecture
+  let arch: Architecture = cliOpts.arch as Architecture
+  if (!arch || !['standalone', 'monorepo'].includes(arch)) {
     if (cliOpts.yes) {
-      template = 'api'
+      arch = 'standalone'
     } else {
       const response = await select({
-        message: 'Select a template:',
+        message: 'Select project architecture:',
         options: [
           {
-            value: 'api',
-            label: 'API Backend',
-            hint: 'NestJS v12 + Fastify + Drizzle ORM + Better Auth + Scalar + Pino + Oxlint/Oxfmt',
+            value: 'standalone',
+            label: 'Standalone Backend API',
+            hint: 'Single package NestJS application',
           },
           {
-            value: 'fullstack-monorepo',
-            label: 'Fullstack Monorepo',
-            hint: 'Turborepo + NestJS API + Next.js App Router + shadcn/ui + Better Auth',
+            value: 'monorepo',
+            label: 'Turborepo Monorepo',
+            hint: 'Multi-package workspace with apps/ and packages/',
           },
         ],
       })
@@ -125,11 +143,169 @@ async function main() {
         cancel('Operation cancelled.')
         process.exit(0)
       }
-      template = response as TemplateType
+      arch = response as Architecture
     }
   }
 
-  // 3. Resolve Package Manager
+  // 3. Resolve Frontend
+  let frontend: Frontend = cliOpts.frontend as Frontend
+  if (!frontend || !['next', 'tanstack-router', 'none'].includes(frontend)) {
+    if (cliOpts.yes) {
+      frontend = arch === 'monorepo' ? 'next' : 'none'
+    } else {
+      const options =
+        arch === 'monorepo'
+          ? [
+              {
+                value: 'next',
+                label: 'Next.js 15',
+                hint: 'App Router + shadcn/ui + Tailwind v4',
+              },
+              {
+                value: 'tanstack-router',
+                label: 'TanStack Router',
+                hint: 'Vite + React SPA + shadcn/ui',
+              },
+              { value: 'none', label: 'None', hint: 'Pure backend monorepo' },
+            ]
+          : [
+              { value: 'none', label: 'None', hint: 'API only' },
+              {
+                value: 'tanstack-router',
+                label: 'TanStack Router',
+                hint: 'Client SPA with Vite + React',
+              },
+            ]
+
+      const response = await select({
+        message: 'Select frontend framework:',
+        options,
+      })
+      if (isCancel(response)) {
+        cancel('Operation cancelled.')
+        process.exit(0)
+      }
+      frontend = response as Frontend
+    }
+  }
+
+  // 4. Resolve HTTP Platform Adapter
+  let http: HttpAdapter = cliOpts.http as HttpAdapter
+  if (!http || !['fastify', 'express'].includes(http)) {
+    if (cliOpts.yes) {
+      http = 'fastify'
+    } else {
+      const response = await select({
+        message: 'Select HTTP platform adapter:',
+        options: [
+          {
+            value: 'fastify',
+            label: 'Fastify',
+            hint: 'Recommended - ultra-high throughput',
+          },
+          {
+            value: 'express',
+            label: 'Express',
+            hint: 'Standard NestJS compatibility',
+          },
+        ],
+      })
+      if (isCancel(response)) {
+        cancel('Operation cancelled.')
+        process.exit(0)
+      }
+      http = response as HttpAdapter
+    }
+  }
+
+  // 5. Resolve Database & ORM
+  let db: Database = cliOpts.db as Database
+  if (!db || !['postgres', 'sqlite', 'none'].includes(db)) {
+    if (cliOpts.yes) {
+      db = 'postgres'
+    } else {
+      const response = await select({
+        message: 'Select Database:',
+        options: [
+          {
+            value: 'postgres',
+            label: 'PostgreSQL',
+            hint: 'Recommended with Drizzle ORM',
+          },
+          {
+            value: 'sqlite',
+            label: 'SQLite',
+            hint: 'Local file-based, zero configuration',
+          },
+          { value: 'none', label: 'None', hint: 'Stateless / In-memory store' },
+        ],
+      })
+      if (isCancel(response)) {
+        cancel('Operation cancelled.')
+        process.exit(0)
+      }
+      db = response as Database
+    }
+  }
+
+  const orm: Orm = db === 'none' ? 'none' : 'drizzle'
+
+  // 6. Resolve Authentication
+  let auth: AuthProvider = cliOpts.auth as AuthProvider
+  if (!auth || !['better-auth', 'none'].includes(auth)) {
+    if (cliOpts.yes) {
+      auth = 'better-auth'
+    } else {
+      const response = await select({
+        message: 'Select Authentication:',
+        options: [
+          {
+            value: 'better-auth',
+            label: 'Better Auth',
+            hint: 'Comprehensive TypeScript auth library',
+          },
+          { value: 'none', label: 'None', hint: 'Skip authentication setup' },
+        ],
+      })
+      if (isCancel(response)) {
+        cancel('Operation cancelled.')
+        process.exit(0)
+      }
+      auth = response as AuthProvider
+    }
+  }
+
+  // 7. Resolve API Documentation
+  let docs: ApiDocs = cliOpts.docs as ApiDocs
+  if (!docs || !['scalar', 'swagger', 'none'].includes(docs)) {
+    if (cliOpts.yes) {
+      docs = 'scalar'
+    } else {
+      const response = await select({
+        message: 'Select API Documentation:',
+        options: [
+          {
+            value: 'scalar',
+            label: 'Scalar',
+            hint: 'Recommended - Modern interactive client',
+          },
+          {
+            value: 'swagger',
+            label: 'Swagger UI',
+            hint: 'Classic Swagger interactive UI',
+          },
+          { value: 'none', label: 'None', hint: 'Skip API documentation' },
+        ],
+      })
+      if (isCancel(response)) {
+        cancel('Operation cancelled.')
+        process.exit(0)
+      }
+      docs = response as ApiDocs
+    }
+  }
+
+  // 8. Resolve Package Manager
   let pm: PackageManager = cliOpts.pm as PackageManager
   if (!pm || !['bun', 'pnpm', 'npm'].includes(pm)) {
     if (cliOpts.yes) {
@@ -164,7 +340,7 @@ async function main() {
     }
   }
 
-  // 4. Resolve Git
+  // 9. Resolve Git
   let shouldGit: boolean = cliOpts.git !== undefined ? cliOpts.git : true
   if (cliOpts.git === undefined && !cliOpts.yes) {
     const response = await confirm({
@@ -178,7 +354,7 @@ async function main() {
     shouldGit = response
   }
 
-  // 5. Resolve Addons via Addon Engine
+  // 10. Resolve Addons
   const hasSpecificAddonFlag =
     cliOpts.docker !== undefined ||
     cliOpts.husky !== undefined ||
@@ -215,7 +391,7 @@ async function main() {
     selectedAddons = response as string[]
   }
 
-  // Apply explicit command-line flag overrides
+  // Flag overrides
   if (cliOpts.docker === false)
     selectedAddons = selectedAddons.filter((a) => a !== 'docker')
   if (cliOpts.docker === true && !selectedAddons.includes('docker'))
@@ -229,7 +405,7 @@ async function main() {
   if (cliOpts.mcp === true && !selectedAddons.includes('mcp'))
     selectedAddons.push('mcp')
 
-  // 6. Resolve Install
+  // 11. Resolve Install
   let shouldInstall: boolean =
     cliOpts.install !== undefined ? cliOpts.install : true
   if (cliOpts.install === undefined && !cliOpts.yes) {
@@ -244,46 +420,50 @@ async function main() {
     shouldInstall = response
   }
 
+  // Project configuration object
+  const projectConfig: ProjectConfig = {
+    projectName,
+    targetDir,
+    pm,
+    arch,
+    frontend,
+    http,
+    db,
+    orm,
+    auth,
+    docs,
+    git: shouldGit,
+    addons: selectedAddons,
+  }
+
   // Scaffolding execution
   const s = spinner()
-  s.start(pc.cyan(`Scaffolding ${template} template into ./${projectName}...`))
+  s.start(
+    pc.cyan(
+      `Scaffolding ${arch} project with custom stack into ./${projectName}...`,
+    ),
+  )
 
   try {
-    // Step A: Copy template files
-    await copyTemplate({
-      projectName,
-      targetDir,
-      template,
-      pm,
-    })
+    // Execute Recipe Generator
+    await executeGenerator(projectConfig)
 
-    // Step B: Initialize Git if opted in
+    // Initialize Git
     if (shouldGit) {
       s.message('Initializing Git repository...')
       initGit(targetDir)
     }
 
-    // Step C: Run Addon Engine
-    s.message('Applying selected addons...')
-    await runAddonEngine({
-      projectName,
-      targetDir,
-      template,
-      pm,
-      git: shouldGit,
-      selectedAddons,
-    })
-
-    // Step D: Install dependencies
+    // Install dependencies
     if (shouldInstall) {
       s.message(`Installing dependencies with ${pm}...`)
       try {
         execSync(getInstallCommand(pm), { cwd: targetDir, stdio: 'ignore' })
       } catch {
-        // Warning if install fails (offline, network, etc.)
+        // Continue if install fails (offline/network)
       }
 
-      // Step E: Setup Husky hooks if selected
+      // Setup Husky hooks
       if (shouldGit && selectedAddons.includes('husky')) {
         s.message('Setting up Git hooks with Husky...')
         setupHusky(targetDir, pm)
@@ -299,7 +479,12 @@ async function main() {
     ]
 
     const summary = [
-      pc.dim(`Template: ${pc.cyan(template)}`),
+      pc.dim(`Architecture: ${pc.cyan(arch)}`),
+      pc.dim(`Frontend: ${pc.cyan(frontend)}`),
+      pc.dim(`HTTP Adapter: ${pc.cyan(http)}`),
+      pc.dim(`Database & ORM: ${pc.cyan(`${db} + ${orm}`)}`),
+      pc.dim(`Auth: ${pc.cyan(auth)}`),
+      pc.dim(`Docs: ${pc.cyan(docs)}`),
       pc.dim(`Package Manager: ${pc.cyan(pm)}`),
       pc.dim(
         `Addons: ${pc.cyan(selectedAddons.length > 0 ? selectedAddons.join(', ') : 'none')}`,
@@ -308,7 +493,7 @@ async function main() {
       ...nextSteps.map((step) => pc.cyan(`  $ ${step}`)),
     ]
 
-    note(summary.join('\n'), 'Project Summary & Next Steps:')
+    note(summary.join('\n'), 'Project Stack & Next Steps:')
 
     outro(pc.bold(pc.green('Happy coding with Better-Nest! 🚀')))
   } catch (error) {
