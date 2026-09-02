@@ -3,7 +3,7 @@ import { databaseRecipe } from './recipes/database'
 import { authRecipe } from './recipes/auth'
 import { docsRecipe } from './recipes/docs'
 import { frontendRecipe } from './recipes/frontend'
-import { runAddonEngine } from '../addons'
+import { runAddonEngine } from '../addons/index'
 import { copyTemplate } from '../utils/template'
 import type { ProjectConfig, Recipe } from './types'
 

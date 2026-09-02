@@ -24,7 +24,7 @@ import {
   type PackageManager,
 } from './utils/pm'
 import { initGit, setupHusky } from './utils/git'
-import { getAddonOptions, getDefaultAddonIds } from './addons'
+import { getAddonOptions, getDefaultAddonIds } from './addons/index'
 import {
   executeGenerator,
   type Architecture,
@@ -374,14 +374,14 @@ async function main() {
   } else if (cliOpts.yes || hasSpecificAddonFlag) {
     selectedAddons = getDefaultAddonIds()
   } else {
-    const initialAddons = getDefaultAddonIds().filter((id) => {
+    const initialAddons = getDefaultAddonIds().filter((id: string) => {
       if (id === 'husky' && !shouldGit) return false
       return true
     })
 
     const response = await multiselect({
       message: 'Select addons to include:',
-      options: getAddonOptions().filter((opt) => {
+      options: getAddonOptions().filter((opt: { value: string }) => {
         if (opt.value === 'husky' && !shouldGit) return false
         return true
       }),
