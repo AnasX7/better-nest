@@ -36,7 +36,11 @@ export async function executeGenerator(config: ProjectConfig): Promise<void> {
     projectName: config.projectName,
     targetDir: config.targetDir,
     template: baseTemplate,
+    arch: config.arch,
     pm: config.pm,
+    db: config.db,
+    frontend: config.frontend,
+    auth: config.auth,
     git: config.git,
     selectedAddons: config.addons,
   })
