@@ -167,10 +167,7 @@ async function adaptMonorepoDocker(ctx: AddonContext) {
     if (await fs.pathExists(webDockerPath)) {
       await fs.remove(webDockerPath)
     }
-  } else if (
-    ctx.frontend === 'tanstack-start' &&
-    (await fs.pathExists(webDockerPath))
-  ) {
+  } else if (ctx.frontend === 'tanstack-start') {
     const tanstackStartDockerfile = `# Stage 1: Build TanStack Start application
 FROM oven/bun:1-alpine AS builder
 

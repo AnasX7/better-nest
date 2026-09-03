@@ -17,9 +17,12 @@ export async function copyTemplate(options: ScaffoldOptions): Promise<void> {
 
   // 1. Try local template resolution first (when developing locally or from monorepo)
   const candidateDirs = [
+    path.resolve(__dirname, '../../../../templates', template),
     path.resolve(__dirname, '../../../templates', template),
     path.resolve(__dirname, '../../templates', template),
     path.resolve(__dirname, '../templates', template),
+    path.resolve(process.cwd(), 'templates', template),
+    path.resolve(process.cwd(), '../../templates', template),
   ]
 
   let foundLocalDir: string | null = null

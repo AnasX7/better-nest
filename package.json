@@ -11,9 +11,14 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "check": "oxlint && oxfmt --check",
+    "test": "turbo run test",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "turbo run build && changeset publish",
     "prepare": "husky"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^17.4.1",
     "oxfmt": "^0.66.0",

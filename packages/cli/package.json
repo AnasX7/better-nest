@@ -1,7 +1,35 @@
 {
   "name": "create-better-nest",
   "version": "0.1.0",
-  "description": "A CLI tool for creating better NestJS applications",
+  "description": "A modern CLI tool for scaffolding production-grade NestJS applications with TypeScript, Fastify/Express, Drizzle ORM, and Better Auth",
+  "author": "Anas <anas@example.com>",
+  "license": "MIT",
+  "homepage": "https://github.com/AnasX7/better-nest#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AnasX7/better-nest.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/AnasX7/better-nest/issues"
+  },
+  "keywords": [
+    "nestjs",
+    "better-nest",
+    "cli",
+    "scaffold",
+    "template",
+    "typescript",
+    "fastify",
+    "express",
+    "drizzle-orm",
+    "better-auth",
+    "scalar",
+    "nextjs",
+    "tanstack",
+    "bun",
+    "turborepo"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "bin": {
@@ -10,7 +38,8 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsdown",
@@ -18,6 +47,7 @@
     "dev": "tsdown --watch",
     "cli": "bun run src/index.ts",
     "start": "node dist/index.cjs",
+    "test": "vitest run",
     "lint": "oxlint"
   },
   "devDependencies": {
@@ -29,6 +59,7 @@
     "giget": "^3.3.1",
     "picocolors": "^1.1.1",
     "tsdown": "^0.20.3",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.11"
   }
 }
