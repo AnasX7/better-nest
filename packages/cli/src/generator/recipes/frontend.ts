@@ -105,10 +105,10 @@ async function createTanStackStartApp(appDir: string) {
       '@types/node': '^24.0.0',
       '@types/react': '^19.2.18',
       '@types/react-dom': '^19.2.5',
-      '@vitejs/plugin-react': '^4.3.4',
+      '@vitejs/plugin-react': '^6.1.1',
       tailwindcss: '^4.0.9',
       typescript: '^6.0.3',
-      vite: '^6.2.0',
+      vite: '^8.2.2',
     },
   }
 
@@ -352,10 +352,10 @@ async function createTanStackRouterClient(clientDir: string) {
       '@types/node': '^24.0.0',
       '@types/react': '^19.2.18',
       '@types/react-dom': '^19.2.5',
-      '@vitejs/plugin-react': '^4.3.4',
+      '@vitejs/plugin-react': '^6.1.1',
       tailwindcss: '^4.0.9',
       typescript: '^6.0.3',
-      vite: '^6.2.0',
+      vite: '^8.2.2',
     },
   }
 
