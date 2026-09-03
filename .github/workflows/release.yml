@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
@@ -39,7 +40,18 @@ jobs:
       - name: Build packages
         run: bun run build
 
+      - name: Check NPM_TOKEN Secret
+        id: check-token
+        run: |
+          if [ -z "${{ secrets.NPM_TOKEN }}" ]; then
+            echo "has_token=false" >> $GITHUB_OUTPUT
+            echo "::warning::NPM_TOKEN secret is not set in GitHub repository settings. Add NPM_TOKEN in repository Settings -> Secrets and variables -> Actions to enable automatic publishing to npm."
+          else
+            echo "has_token=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create Release PR or Publish to npm
+        if: steps.check-token.outputs.has_token == 'true'
         id: changesets
         uses: changesets/action@v1
         with:
