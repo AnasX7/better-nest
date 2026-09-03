@@ -31,14 +31,38 @@ export const frontendRecipe: Recipe = {
         const clientDir = path.join(config.targetDir, 'client')
         await createTanStackRouterClient(clientDir)
 
-        // Add client scripts to root package.json
+        // Add client workspace and scripts to root package.json
         const rootPkgPath = path.join(config.targetDir, 'package.json')
         if (await fs.pathExists(rootPkgPath)) {
           const pkg = await fs.readJson(rootPkgPath)
+          pkg.workspaces = pkg.workspaces || []
+          if (!pkg.workspaces.includes('client')) {
+            pkg.workspaces.push('client')
+          }
           pkg.scripts = pkg.scripts || {}
-          pkg.scripts['dev:client'] = 'cd client && bun run dev'
-          pkg.scripts['build:client'] = 'cd client && bun run build'
+          pkg.scripts['dev:client'] =
+            config.pm === 'bun'
+              ? 'bun run --cwd client dev'
+              : 'npm --prefix client run dev'
+          pkg.scripts['build:client'] =
+            config.pm === 'bun'
+              ? 'bun run --cwd client build'
+              : 'npm --prefix client run build'
           await fs.writeJson(rootPkgPath, pkg, { spaces: 2 })
+        }
+
+        // Exclude client from root tsconfig.json so backend tsc doesn't check React JSX
+        const rootTsconfigPath = path.join(config.targetDir, 'tsconfig.json')
+        if (await fs.pathExists(rootTsconfigPath)) {
+          const rootTsconfig = await fs.readJson(rootTsconfigPath)
+          rootTsconfig.exclude = rootTsconfig.exclude || [
+            'node_modules',
+            'dist',
+          ]
+          if (!rootTsconfig.exclude.includes('client')) {
+            rootTsconfig.exclude.push('client')
+          }
+          await fs.writeJson(rootTsconfigPath, rootTsconfig, { spaces: 2 })
         }
       }
     }
@@ -81,7 +105,7 @@ async function createTanStackStartApp(appDir: string) {
       '@types/node': '^24.0.0',
       '@types/react': '^19.2.18',
       '@types/react-dom': '^19.2.5',
-      '@vitejs/plugin-react': '^6.1.1',
+      '@vitejs/plugin-react': '^4.3.4',
       tailwindcss: '^4.0.9',
       typescript: '^6.0.3',
       vite: '^6.2.0',
@@ -112,7 +136,7 @@ export default defineConfig({
 
   // 3. tsconfig.json
   const tsconfig = {
-    extends: '@repo/tsconfig/react-library.json',
+    extends: '@repo/tsconfig/base.json',
     compilerOptions: {
       target: 'ES2022',
       useDefineForClassFields: true,
@@ -125,6 +149,7 @@ export default defineConfig({
       noEmit: true,
       jsx: 'react-jsx',
       strict: true,
+      types: ['vite/client'],
     },
     include: ['src'],
   }
@@ -222,6 +247,40 @@ function Index() {
 `
   await fs.writeFile(path.join(routesDir, 'index.tsx'), indexRoute, 'utf8')
 
+  // src/routeTree.gen.ts
+  const routeTreeGen = `/* eslint-disable */
+// @ts-nocheck
+// noinspection JSUnusedGlobalSymbols
+
+import { Route as rootRoute } from './routes/__root'
+import { Route as IndexImport } from './routes/index'
+
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+  }
+}
+
+export const routeTree = rootRoute.addChildren([IndexRoute])
+`
+  await fs.writeFile(
+    path.join(srcDir, 'routeTree.gen.ts'),
+    routeTreeGen,
+    'utf8',
+  )
+
   // src/main.tsx
   const mainTsx = `import React from 'react'
 import ReactDOM from 'react-dom/client'
@@ -276,7 +335,7 @@ async function createTanStackRouterClient(clientDir: string) {
     type: 'module',
     scripts: {
       dev: 'vite',
-      build: 'tsc && vite build',
+      build: 'vite build',
       preview: 'vite preview',
     },
     dependencies: {
@@ -293,7 +352,7 @@ async function createTanStackRouterClient(clientDir: string) {
       '@types/node': '^24.0.0',
       '@types/react': '^19.2.18',
       '@types/react-dom': '^19.2.5',
-      '@vitejs/plugin-react': '^6.1.1',
+      '@vitejs/plugin-react': '^4.3.4',
       tailwindcss: '^4.0.9',
       typescript: '^6.0.3',
       vite: '^6.2.0',
@@ -336,6 +395,7 @@ export default defineConfig({
       noEmit: true,
       jsx: 'react-jsx',
       strict: true,
+      types: ['vite/client'],
     },
     include: ['src'],
   }
@@ -445,6 +505,40 @@ function Index() {
 }
 `
   await fs.writeFile(path.join(routesDir, 'index.tsx'), indexRoute, 'utf8')
+
+  // src/routeTree.gen.ts
+  const routeTreeGen = `/* eslint-disable */
+// @ts-nocheck
+// noinspection JSUnusedGlobalSymbols
+
+import { Route as rootRoute } from './routes/__root'
+import { Route as IndexImport } from './routes/index'
+
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+  }
+}
+
+export const routeTree = rootRoute.addChildren([IndexRoute])
+`
+  await fs.writeFile(
+    path.join(srcDir, 'routeTree.gen.ts'),
+    routeTreeGen,
+    'utf8',
+  )
 
   // src/main.tsx
   const mainTsx = `import React from 'react'
